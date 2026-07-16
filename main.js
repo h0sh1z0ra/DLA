@@ -1,7 +1,6 @@
 // Canvas elements
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const STEPS_PER_FRAME = 10000;
 let running = true;
 
 
@@ -24,6 +23,17 @@ pauseButton.addEventListener("click", () => {
 });
 
 // ====================================================================== //
+
+// Frame rate control
+let STEPS_PER_FRAME = 3000;
+
+const stepsPerFrame = document.getElementById("stepsPerFrame"); 
+stepsPerFrame.addEventListener("input", () => {                 // () = callback; parameter list. => makes it a function
+    STEPS_PER_FRAME = parseFloat(stepsPerFrame.value);          // convert to float
+});
+
+// ====================================================================== //
+
 // Bias
 let direction;
 let delta = 0; // bias strength
@@ -100,6 +110,7 @@ bindButton("biasDown", () => {
 });
 
 const biasSlider = document.getElementById("biasSlider"); 
+biasSlider.style.display = "none";
 biasSlider.addEventListener("input", () => {    
     delta = parseFloat(biasSlider.value);
     p_list = addBias(direction, delta);
@@ -116,6 +127,7 @@ function reset() {
     cluster.add(`${x},${y}`);
 
     counter = 0;
+    stuck_counter = 0;
     R_max = 0;
 }
 
@@ -124,6 +136,21 @@ bindButton( "resetButton", () => {
     running = true;
     pauseButton.textContent = "Pause";
 })
+// ====================================================================== //
+// Counter
+let counter = 0;                            // No. of particles
+let stuck_counter = 0;                      // No. of particles that stick
+let ratio = (stuck_counter / counter) * 100;  // % of particles that stick
+
+let N = document.getElementById("N");
+N.textContent = counter;
+
+let NStuck = document.getElementById("NStuck");
+NStuck.textContent = stuck_counter;
+
+let Ratio = document.getElementById("Ratio");
+Ratio.textContent = ratio;
+
 // ====================================================================== //
 
 // DLA variables
@@ -138,11 +165,8 @@ let cluster = new Set();
 cluster.add(`${x},${y}`);
 
 // Lists
-
 let nn_list = [[1,0],[-1,0],[0,1],[0,-1]];
 let snn_list = [[1,1],[-1,1],[1,-1],[-1,-1]];
-
-let counter = 0; // No. of particles that stick
 let prevDrawX, prevDrawY;
 
 // Function to walk the particle
@@ -231,7 +255,13 @@ function animate() {
             // Condition for sticking
             if (isStuck(cluster, x, y, Pnn, Psnn)) {
                 cluster.add(`${x},${y}`);
+                
+                // Increment and update counters
                 counter++;
+                stuck_counter++;
+
+                N.textContent = counter;
+                NStuck.textContent = stuck_counter;
 
                 // Drawing cluster
                 ctx.fillStyle = "rgb(0, 157, 175)";
@@ -248,7 +278,10 @@ function animate() {
             else if (isDead(x, y, R_max)) {
                 result = spawnWalker(R_max);
                 x = result.x;
-                y = result.y;   
+                y = result.y;  
+
+                counter++;
+                N.textContent = counter;
             }
         }    
 
@@ -259,13 +292,11 @@ function animate() {
         ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 5, 5);
         // prevDrawX = x;
         // prevDrawY = y;
-        
-        counter++;
-        console.log(counter);
-        
-        
     }
-    
+
+    ratio = ((stuck_counter/counter) * 100).toFixed(2);
+    Ratio.textContent = ratio;
+
     requestAnimationFrame(animate);
 }
 animate();
