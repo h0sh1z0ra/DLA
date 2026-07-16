@@ -1,19 +1,148 @@
-// Global variables
+// Canvas elements
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const STEPS_PER_FRAME = 10000;
+let running = true;
 
-// Other variables
+
+const pnnSlider = document.getElementById("pnnSlider"); 
+pnnSlider.addEventListener("input", () => {     // () = callback; parameter list. => makes it a function
+    Pnn = parseFloat(pnnSlider.value);          // convert to float
+    console.log(`Pnn = ${Pnn}`);
+});
+
+const psnnSlider = document.getElementById("psnnSlider"); 
+psnnSlider.addEventListener("input", () => {    
+    Psnn = parseFloat(psnnSlider.value);      
+    console.log(`Psnn = ${Psnn}`);
+});
+
+const pauseButton = document.getElementById("pauseButton");
+pauseButton.addEventListener("click", () => {
+    running = !running;
+    pauseButton.textContent = running ? "Pause" : "Resume";
+});
+
+// ====================================================================== //
+// Bias
+let direction;
+let delta = 0; // bias strength
+let p_list = [0.25, 0.25, 0.25, 0.25];
+let drn_map = ["left", "right", "up", "down"];
+
+function addBias(direction, delta) {
+    prob_list = [0.25, 0.25, 0.25, 0.25];
+
+    if (direction % 2 == 0) {
+        prob_list[direction] += delta;
+        prob_list[direction+1] -= delta;
+    }
+
+    else {
+        prob_list[direction] += delta;
+        prob_list[direction-1] -= delta;
+    }
+
+    return prob_list;
+}
+
+// Adding bias direction buttons
+function bindButton(id, callback) {
+    let el = document.getElementById(id);
+    el.addEventListener("click", () => {
+        callback();
+    }
+)};
+
+// Binding button functions
+bindButton("biasNone", () => { 
+    delta = 0; 
+    p_list = [0.25,0.25,0.25,0.25];
+    biasSlider.value = delta; 
+    biasSlider.style.display="none";
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`)
+});
+
+bindButton("biasLeft", () => { 
+    direction = 0; 
+    delta = 0.08;
+    biasSlider.value = delta;  
+    p_list = addBias(direction, delta); 
+    biasSlider.style.display=""; 
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`)
+});
+
+bindButton("biasRight", () => { 
+    direction = 1; 
+    delta = 0.08;
+    biasSlider.value = delta;  
+    p_list = addBias(direction, delta); 
+    biasSlider.style.display=""; 
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
+});
+
+bindButton("biasUp", () => { 
+    direction = 2; 
+    delta = 0.08;
+    biasSlider.value = delta;  
+    p_list = addBias(direction, delta); 
+    biasSlider.style.display=""; 
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
+});
+
+bindButton("biasDown", () => { 
+    direction = 3; 
+    delta = 0.08;
+    biasSlider.value = delta;  
+    p_list = addBias(direction, delta);
+    biasSlider.style.display=""; 
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
+});
+
+const biasSlider = document.getElementById("biasSlider"); 
+biasSlider.addEventListener("input", () => {    
+    delta = parseFloat(biasSlider.value);
+    p_list = addBias(direction, delta);
+    console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
+});
+
+// ====================================================================== //
+// Reset button
+function reset() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    x = 0;
+    y = 0;
+    cluster = new Set();
+    cluster.add(`${x},${y}`);
+
+    counter = 0;
+    R_max = 0;
+}
+
+bindButton( "resetButton", () => {
+    reset();
+    running = true;
+    pauseButton.textContent = "Pause";
+})
+// ====================================================================== //
+
+// DLA variables
 let x = 0;
 let y = 0;
 let R_max = 0;
 let Pnn = 1;
 let Psnn = 0;
+
+// Starting cluster
 let cluster = new Set();
 cluster.add(`${x},${y}`);
+
+// Lists
+
 let nn_list = [[1,0],[-1,0],[0,1],[0,-1]];
 let snn_list = [[1,1],[-1,1],[1,-1],[-1,-1]];
 
+let counter = 0; // No. of particles that stick
 let prevDrawX, prevDrawY;
 
 // Function to walk the particle
@@ -92,44 +221,51 @@ function animate() {
     // 4. Else, continue!
 
     // Loop through, so each frame takes some amount of steps
-    for (let i = 0; i < STEPS_PER_FRAME; i++) {
-        // Called like an object
-        let result = stepParticle(x, y, [0.25, 0.25, 0.25, 0.25]);
-        x = result.x;
-        y = result.y;
-
-        // Condition for sticking
-        if (isStuck(cluster, x, y, Pnn, Psnn)) {
-            cluster.add(`${x},${y}`);
-
-            // Drawing cluster
-            ctx.fillStyle = "rgb(0 200 0)";
-            ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 2, 2);
-
-            // Take whatever R_max is bigger between the current value and the new cluster particle
-            R_max = Math.max(R_max, Math.sqrt((x**2 + y**2)));
-            result = spawnWalker(R_max);
+    if (running) {
+        for (let i = 0; i < STEPS_PER_FRAME; i++) {
+            // Called like an object
+            let result = stepParticle(x, y, p_list);
             x = result.x;
             y = result.y;
-        }
 
-        // Particle kill condition
-        else if (isDead(x, y, R_max)) {
-            result = spawnWalker(R_max);
-            x = result.x;
-            y = result.y;   
-        }
-    }    
+            // Condition for sticking
+            if (isStuck(cluster, x, y, Pnn, Psnn)) {
+                cluster.add(`${x},${y}`);
+                counter++;
 
-    ctx.fillStyle = "rgb(200 0 0/10%)";
+                // Drawing cluster
+                ctx.fillStyle = "rgb(0, 157, 175)";
+                ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 2, 2);
 
-    // ctx.clearRect(prevDrawX+canvas.width/2, prevDrawY+canvas.height/2, 5, 5);
-    ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 5, 5);
-    // prevDrawX = x;
-    // prevDrawY = y;
+                // Take whatever R_max is bigger between the current value and the new cluster particle
+                R_max = Math.max(R_max, Math.sqrt((x**2 + y**2)));
+                result = spawnWalker(R_max);
+                x = result.x;
+                y = result.y;
+            }
+
+            // Particle kill condition
+            else if (isDead(x, y, R_max)) {
+                result = spawnWalker(R_max);
+                x = result.x;
+                y = result.y;   
+            }
+        }    
+
+        ctx.fillStyle = "rgb(200 0 0/0%)";
+        ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 2, 2);
+
+        // ctx.clearRect(prevDrawX+canvas.width/2, prevDrawY+canvas.height/2, 5, 5);
+        ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 5, 5);
+        // prevDrawX = x;
+        // prevDrawY = y;
+        
+        counter++;
+        console.log(counter);
+        
+        
+    }
     
     requestAnimationFrame(animate);
-    
-
 }
 animate();
