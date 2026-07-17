@@ -1,9 +1,17 @@
 // Canvas elements
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// For cluster
+const canvas_cluster = document.getElementById("canvas_cluster");
+const ctx_cluster = canvas_cluster.getContext("2d");
+
+// For particle path
+const canvas_path = document.getElementById("canvas_path");
+const ctx_path = canvas_path.getContext("2d");
+canvas_path.style.display = "none";     // Hide by default
+
 let running = true;
 
-
+// ====================================================================== //
+// Sliders
 const pnnSlider = document.getElementById("pnnSlider"); 
 pnnSlider.addEventListener("input", () => {     // () = callback; parameter list. => makes it a function
     Pnn = parseFloat(pnnSlider.value);          // convert to float
@@ -25,11 +33,13 @@ pauseButton.addEventListener("click", () => {
 // ====================================================================== //
 
 // Frame rate control
-let STEPS_PER_FRAME = 3000;
+let STEPS_PER_FRAME = 20000;
 
 const stepsPerFrame = document.getElementById("stepsPerFrame"); 
 stepsPerFrame.addEventListener("input", () => {                 // () = callback; parameter list. => makes it a function
-    STEPS_PER_FRAME = parseFloat(stepsPerFrame.value);          // convert to float
+    // STEPS_PER_FRAME = parseFloat(stepsPerFrame.value);          // convert to float
+    STEPS_PER_FRAME = Math.round(1 * (50000/1)**stepsPerFrame.value);
+    console.log(STEPS_PER_FRAME);
 });
 
 // ====================================================================== //
@@ -120,7 +130,8 @@ biasSlider.addEventListener("input", () => {
 // ====================================================================== //
 // Reset button
 function reset() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx_cluster.clearRect(0, 0, canvas_cluster.width, canvas_cluster.height);
+    ctx_path.clearRect(0, 0, canvas_path.width, canvas_path.height);
     x = 0;
     y = 0;
     cluster = new Set();
@@ -137,6 +148,18 @@ bindButton( "resetButton", () => {
     pauseButton.textContent = "Pause";
 })
 // ====================================================================== //
+// Show walkers
+let walkerPos = new Set();
+let prevDrawX, prevDrawY;
+let show_walkers = false;
+
+bindButton("showWalker", () => {
+    show_walkers = !show_walkers;
+    showWalker.textContent = show_walkers ? "Hide Particle Paths" : "Show Particle Paths";
+    canvas_path.style.display = show_walkers ? "" : "none";
+});
+
+// ====================================================================== //
 // Counter
 let counter = 0;                            // No. of particles
 let stuck_counter = 0;                      // No. of particles that stick
@@ -152,7 +175,6 @@ let Ratio = document.getElementById("Ratio");
 Ratio.textContent = ratio;
 
 // ====================================================================== //
-
 // DLA variables
 let x = 0;
 let y = 0;
@@ -167,7 +189,6 @@ cluster.add(`${x},${y}`);
 // Lists
 let nn_list = [[1,0],[-1,0],[0,1],[0,-1]];
 let snn_list = [[1,1],[-1,1],[1,-1],[-1,-1]];
-let prevDrawX, prevDrawY;
 
 // Function to walk the particle
 function stepParticle(x, y, p_list) {
@@ -251,10 +272,15 @@ function animate() {
             let result = stepParticle(x, y, p_list);
             x = result.x;
             y = result.y;
+            walkerPos.add(`${x},${y}`);
+            
+            ctx_path.fillStyle = "rgb(200, 0, 0 / 30%)";
+            ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
 
             // Condition for sticking
             if (isStuck(cluster, x, y, Pnn, Psnn)) {
                 cluster.add(`${x},${y}`);
+                ctx_path.clearRect(0, 0, canvas_path.width, canvas_path.height);
                 
                 // Increment and update counters
                 counter++;
@@ -264,8 +290,8 @@ function animate() {
                 NStuck.textContent = stuck_counter;
 
                 // Drawing cluster
-                ctx.fillStyle = "rgb(0, 157, 175)";
-                ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 2, 2);
+                ctx_cluster.fillStyle = "rgb(0, 157, 175)";
+                ctx_cluster.fillRect(x+canvas_cluster.width/2, y+canvas_cluster.height/2, 2, 2);
 
                 // Take whatever R_max is bigger between the current value and the new cluster particle
                 R_max = Math.max(R_max, Math.sqrt((x**2 + y**2)));
@@ -279,23 +305,37 @@ function animate() {
                 result = spawnWalker(R_max);
                 x = result.x;
                 y = result.y;  
+                ctx_path.clearRect(0, 0, canvas_path.width, canvas_path.height);
 
                 counter++;
                 N.textContent = counter;
             }
         }    
 
-        ctx.fillStyle = "rgb(200 0 0/0%)";
-        ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 2, 2);
+        // if (show_walkers) {
+        //     ctx_path.fillStyle = "rgb(200 0 0/30%)";
+        //     // ctx_path.clearRect(prevDrawX+canvas_path.width/2, prevDrawY+canvas_path.height/2, 5, 5);
+        //     ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
+        //     prevDrawX = x;
+        //     prevDrawY = y;
+        //     console.log(show_walkers)
+        // }
 
-        // ctx.clearRect(prevDrawX+canvas.width/2, prevDrawY+canvas.height/2, 5, 5);
-        ctx.fillRect(x+canvas.width/2, y+canvas.height/2, 5, 5);
-        // prevDrawX = x;
-        // prevDrawY = y;
-    }
+        // else {
+        //     ctx_path.fillStyle = "rgb(200 0 0/0%)";
+        //     // ctx_path.clearRect(prevDrawX+canvas_path.width/2, prevDrawY+canvas_path.height/2, 5, 5);
+        //     ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 5, 5);
+        //     prevDrawX = x;
+        //     prevDrawY = y;
+        //     console.log(show_walkers)   
+        // }
+
+    // ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
 
     ratio = ((stuck_counter/counter) * 100).toFixed(2);
     Ratio.textContent = ratio;
+
+    }   
 
     requestAnimationFrame(animate);
 }

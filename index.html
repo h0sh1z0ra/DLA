@@ -1,18 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <title>DLA</title>
+
         <meta charset="utf-8">
+        <meta name="author" content="h0sh1z0ra">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="ico.png" type="image/x-icon">
     </head>
+
+
+    <style>
+        body {
+            background-color: lightblue;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+        .label {
+            font-family: MS-Gothic;
+            font-size: 40;
+            font-weight: bold;
+        }
+
+        .canvas-layers {
+            position: relative;
+        }
+
+        .canvas-layers canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+    </style>
+
     <body>
-        <canvas id="canvas" width="800" height="600"></canvas>
-        <span id="N">Particle Count</span>
-        <span id="NStuck">Stuck Particle Counter</span>
-        <span id="Ratio">% Stuck</span>
+        <h1>Diffusion-Limited Aggregation</h1>
+    
+        
+        <span class="label">Total Particle Count: </span> <span id="N" style="color: purple">0</span>
+        <span class="label">Stuck Particle Count: </span> <span id="NStuck" style="color: purple">0</span>
+        <span class="label">Stuck-to-Total Ratio: </span> <span id="Ratio" style="color: purple">0</span>
 
         <input type="range" id="pnnSlider" min="0" max="1" step="0.05" value="1">
         <input type="range" id="psnnSlider" min="0" max="1" step="0.05" value="0">
+        <input type="range" id="stepsPerFrame" min="0" max="1" step="0.01" value="5000">
         <input type="range" id="biasSlider" min="0" max="0.25" step="0.01" value="0.08">
-        <input type="range" id="stepsPerFrame" min="0" max="50000" step="100" value="3000">
 
         <button id="biasNone">None</button>
         <button id="biasLeft">←</button>
@@ -22,6 +59,13 @@
 
         <button id="pauseButton">Pause</button>
         <button id="resetButton">Reset</button>
+        
+        <button id="showWalker">Show Particle Paths</button>
+
+        <div class="canvas-layers">
+            <canvas id="canvas_cluster" width="800" height="600"></canvas>
+            <canvas id="canvas_path" width="800" height="600"></canvas>
+        </div>
 
         <script src="main.js"></script>
     </body>
