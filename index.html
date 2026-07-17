@@ -20,14 +20,54 @@
             text-align: center;
         }
 
+        .app {
+            display:flex;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            
+            gap: 15px;
+        }
+
         .label {
             font-family: MS-Gothic;
-            font-size: 40;
+            font-size: 12px;
             font-weight: bold;
+
+        }
+
+        .slider {
+            accent-color: #5ad1e8;
+            width: 200px;
+        }
+
+        button.active {
+            border: 2px solid green;
+        }
+
+        button {
+            background-color: #5ad1e8;
+            color: black;
+            border: 2px solid red;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        button:hover { 
+            background-color: #7ae0f0;
         }
 
         .canvas-layers {
             position: relative;
+
+            margin: 8px;
+            border: 2px solid white;
+
+            width: 800px;
+            height: 600px;
         }
 
         .canvas-layers canvas {
@@ -36,37 +76,71 @@
             left: 0;
         }
 
+        .canvas-area .counters {
+            position: absolute;
+
+            border: 2px solid red;
+            padding: 5px;
+            
+            top: 8px;
+            left: 8px;
+        }
+
+        .bias {
+            
+            border: 2px solid white;
+            gap: 15px;
+            padding: 5px;
+        }
+
+        .controls
+
     </style>
 
     <body>
+
         <h1>Diffusion-Limited Aggregation</h1>
-    
         
-        <span class="label">Total Particle Count: </span> <span id="N" style="color: purple">0</span>
-        <span class="label">Stuck Particle Count: </span> <span id="NStuck" style="color: purple">0</span>
-        <span class="label">Stuck-to-Total Ratio: </span> <span id="Ratio" style="color: purple">0</span>
+        <div class="app">
+            <div class="controls">
+                <div class="prob">
+                    <input class="slider" type="range" id="pnnSlider" min="0" max="1" step="0.05" value="1">
+                    <input class="slider" type="range" id="psnnSlider" min="0" max="1" step="0.05" value="0">
+                    <input class="slider" type="range" id="stepsPerFrame" min="0" max="1" step="0.01" value="5000">
+                </div>
 
-        <input type="range" id="pnnSlider" min="0" max="1" step="0.05" value="1">
-        <input type="range" id="psnnSlider" min="0" max="1" step="0.05" value="0">
-        <input type="range" id="stepsPerFrame" min="0" max="1" step="0.01" value="5000">
-        <input type="range" id="biasSlider" min="0" max="0.25" step="0.01" value="0.08">
+                <div class="bias">
+                    <button class="active" id="biasNone">None</button>
+                    <button id="biasLeft">←</button>
+                    <button id="biasRight">→</button>
+                    <button id="biasUp">↑</button>
+                    <button id="biasDown">↓</button>
+                    <input class="slider" type="range" id="biasSlider" min="0" max="0.25" step="0.01" value="0.08">
+                </div>
 
-        <button id="biasNone">None</button>
-        <button id="biasLeft">←</button>
-        <button id="biasRight">→</button>
-        <button id="biasUp">↑</button>
-        <button id="biasDown">↓</button>
+                <div class="misc">
+                    <button class="toggle" id="showWalker">Show Particle Paths</button>
+                    <button class="toggle" id="pauseButton">Pause</button>
+                    <button id="resetButton">Reset</button>
+                </div>  
+            </div>
 
-        <button id="pauseButton">Pause</button>
-        <button id="resetButton">Reset</button>
-        
-        <button id="showWalker">Show Particle Paths</button>
+            <div class="canvas-area">
+                <div class="canvas-layers">
+                    <canvas id="canvas_cluster" width="800" height="600"></canvas>
+                    <canvas id="canvas_path" width="800" height="600"></canvas>
 
-        <div class="canvas-layers">
-            <canvas id="canvas_cluster" width="800" height="600"></canvas>
-            <canvas id="canvas_path" width="800" height="600"></canvas>
+                    <div class="counters">
+                        <span class="label">Total Particle Count: </span> <span id="N" style="color: purple">0</span><br>
+                        <span class="label">Stuck Particle Count: </span> <span id="NStuck" style="color: purple">0</span><br>
+                        <span class="label">% Particles Stuck:  </span> <span id="Ratio" style="color: purple">0</span><span style="color: purple; font-weight: bold">%</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="main.js"></script>
+
     </body>
+    
 </html>

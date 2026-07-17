@@ -7,6 +7,7 @@ const ctx_cluster = canvas_cluster.getContext("2d");
 const canvas_path = document.getElementById("canvas_path");
 const ctx_path = canvas_path.getContext("2d");
 canvas_path.style.display = "none";     // Hide by default
+ctx_path.fillStyle = "rgb(200 0 0/30%)";
 
 let running = true;
 
@@ -24,10 +25,17 @@ psnnSlider.addEventListener("input", () => {
     console.log(`Psnn = ${Psnn}`);
 });
 
-const pauseButton = document.getElementById("pauseButton");
-pauseButton.addEventListener("click", () => {
+function bindButton(id, callback) {
+    let element = document.getElementById(id);
+    element.addEventListener("click", () => {
+        callback();
+    }
+)};
+
+bindButton("pauseButton", () => {
     running = !running;
     pauseButton.textContent = running ? "Pause" : "Resume";
+    pauseButton.classList.toggle("active");
 });
 
 // ====================================================================== //
@@ -67,19 +75,18 @@ function addBias(direction, delta) {
 }
 
 // Adding bias direction buttons
-function bindButton(id, callback) {
-    let el = document.getElementById(id);
-    el.addEventListener("click", () => {
-        callback();
-    }
-)};
-
-// Binding button functions
 bindButton("biasNone", () => { 
     delta = 0; 
     p_list = [0.25,0.25,0.25,0.25];
     biasSlider.value = delta; 
     biasSlider.style.display="none";
+
+    biasNone.classList.add("active");
+    biasRight.classList.remove("active");
+    biasDown.classList.remove("active");
+    biasUp.classList.remove("active");
+    biasLeft.classList.remove("active");
+
     console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`)
 });
 
@@ -89,6 +96,13 @@ bindButton("biasLeft", () => {
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
     biasSlider.style.display=""; 
+
+    biasNone.classList.remove("active");
+    biasLeft.classList.add("active");
+    biasRight.classList.remove("active");
+    biasDown.classList.remove("active");
+    biasUp.classList.remove("active");
+
     console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`)
 });
 
@@ -98,6 +112,13 @@ bindButton("biasRight", () => {
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
     biasSlider.style.display=""; 
+
+    biasNone.classList.remove("active");
+    biasRight.classList.add("active");
+    biasDown.classList.remove("active");
+    biasUp.classList.remove("active");
+    biasLeft.classList.remove("active");
+
     console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
 });
 
@@ -107,6 +128,13 @@ bindButton("biasUp", () => {
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
     biasSlider.style.display=""; 
+
+    biasNone.classList.remove("active");
+    biasUp.classList.add("active");
+    biasDown.classList.remove("active");
+    biasLeft.classList.remove("active");
+    biasRight.classList.remove("active");
+
     console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
 });
 
@@ -116,6 +144,13 @@ bindButton("biasDown", () => {
     biasSlider.value = delta;  
     p_list = addBias(direction, delta);
     biasSlider.style.display=""; 
+
+    biasNone.classList.remove("active");
+    biasDown.classList.add("active");
+    biasUp.classList.remove("active");
+    biasLeft.classList.remove("active");
+    biasRight.classList.remove("active");
+
     console.log(`p_list = ${p_list}, direction = ${drn_map[direction]}, strength = ${delta}`) 
 });
 
@@ -132,6 +167,9 @@ biasSlider.addEventListener("input", () => {
 function reset() {
     ctx_cluster.clearRect(0, 0, canvas_cluster.width, canvas_cluster.height);
     ctx_path.clearRect(0, 0, canvas_path.width, canvas_path.height);
+
+    pauseButton.classList.remove("active");
+
     x = 0;
     y = 0;
     cluster = new Set();
@@ -149,7 +187,6 @@ bindButton( "resetButton", () => {
 })
 // ====================================================================== //
 // Show walkers
-let walkerPos = new Set();
 let prevDrawX, prevDrawY;
 let show_walkers = false;
 
@@ -272,9 +309,7 @@ function animate() {
             let result = stepParticle(x, y, p_list);
             x = result.x;
             y = result.y;
-            walkerPos.add(`${x},${y}`);
             
-            ctx_path.fillStyle = "rgb(200, 0, 0 / 30%)";
             ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
 
             // Condition for sticking
@@ -311,26 +346,6 @@ function animate() {
                 N.textContent = counter;
             }
         }    
-
-        // if (show_walkers) {
-        //     ctx_path.fillStyle = "rgb(200 0 0/30%)";
-        //     // ctx_path.clearRect(prevDrawX+canvas_path.width/2, prevDrawY+canvas_path.height/2, 5, 5);
-        //     ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
-        //     prevDrawX = x;
-        //     prevDrawY = y;
-        //     console.log(show_walkers)
-        // }
-
-        // else {
-        //     ctx_path.fillStyle = "rgb(200 0 0/0%)";
-        //     // ctx_path.clearRect(prevDrawX+canvas_path.width/2, prevDrawY+canvas_path.height/2, 5, 5);
-        //     ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 5, 5);
-        //     prevDrawX = x;
-        //     prevDrawY = y;
-        //     console.log(show_walkers)   
-        // }
-
-    // ctx_path.fillRect(x+canvas_path.width/2, y+canvas_path.height/2, 2, 2);
 
     ratio = ((stuck_counter/counter) * 100).toFixed(2);
     Ratio.textContent = ratio;
