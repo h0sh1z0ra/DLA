@@ -6,164 +6,12 @@
         <meta charset="utf-8">
         <meta name="author" content="h0sh1z0ra">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="ico.png" type="image/x-icon">
+        <link rel="icon" href="img/ico.png" type="image/x-icon">
+
+        <link rel="stylesheet" href="styles.css" />
     </head>
 
-
-    <style>
-        body {
-            background-image: url("background.jpg");
-            background-size: cover;
-            /* background-repeat: no-repeat; */
-        }
-
-        h1 {
-            color: white;
-        }
-
-        h2 {
-            color: white;
-            font-size: 200%;
-
-            margin: 0px;
-        }
-
-        .app {
-            display:flex;
-            align-items: flex-start;
-        }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-
-            gap: 15px;
-        }
-
-        .label {
-            /* display: flex;
-            flex-direction: column; */
-
-            font-family: MS-Gothic;
-            font-size: 12px;
-            font-weight: bold;
-
-            color:white;
-        }
-
-        .slider {
-            accent-color: #5ad1e8;
-            width: 200px;
-        }
-
-        button.active {
-            border: 2px solid rgb(3, 239, 3);
-        }
-
-        button {
-            background-color: rgba(184, 184, 184, 0.5);
-
-            color: black;
-
-            border: 2px solid red;
-            border-radius: 6px;
-            padding: 8px 16px;
-            
-            cursor: pointer;
-        }
-
-        button:hover { 
-            background-color: #b3f0f9;
-        }
-
-        .canvas-area {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .canvas-layers {
-            position: relative;
-
-            /* background-image: url("background.jpg");
-            background-size: cover; */
-            background-color: rgb(0, 75, 132);
-
-            left: 10px;
-            border: 2px solid white;
-            border-radius: 10px;
-
-
-            width: 800px;
-            height: 600px;
-        }
-
-        .canvas-layers canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .canvas-area .counters {
-            color: white;
-            position: absolute;
-
-            padding: 5px;
-            
-            top: 8px;
-            left: 8px;
-        }
-
-        .prob {
-            display: flex;
-            flex-direction: column;
-
-            border: 2px solid white;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .sim-speed {
-            display: flex;
-            flex-direction: column;
-
-            border: 2px solid white;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .bias {
-            display: flex;
-            flex-direction: column;
-
-            border: 2px solid white;
-            gap: 5px;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .bias-buttons {
-            display: flex;
-            
-            margin: 0px;
-        }
-
-        .misc-buttons {
-            display: flex;
-            
-            margin: 5px;
-        }
-
-        .misc {
-            border: 2px solid white;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-    </style>
-
     <body>
-
         <h1>Diffusion-Limited Aggregation</h1>
         
         <div class="app">
@@ -204,6 +52,7 @@
                         <button id="resetButton">Reset</button>
                     </div>
                 </div>  
+                <img class="bethly" src="img/bethly.png">
             </div>
 
             <div class="canvas-area">
@@ -213,9 +62,9 @@
                     <canvas id="canvas_path" width="800" height="600"></canvas>
 
                     <div class="counters">
-                        <span class="label">Total Particle Count: </span> <span id="N" style="color: rgb(255, 47, 255)">0</span><br>
-                        <span class="label">Stuck Particle Count: </span> <span id="NStuck" style="color: rgb(255, 47, 255)">0</span><br>
-                        <span class="label">% Particles Stuck:  </span> <span id="Ratio" style="color: rgb(255, 47, 255)">0</span><span style="color: rgb(255, 47, 255); font-weight: bold">%</span>
+                        <span class="label">Total Particle Count: </span> <span id="N" style="color: rgb(13, 6, 6)">0</span><br>
+                        <span class="label">Stuck Particle Count: </span> <span id="NStuck" style="color: rgb(13, 6, 6)">0</span><br>
+                        <span class="label">% Particles Stuck:  </span> <span id="Ratio" style="color: rgb(13, 6, 6)">0</span><span style="color: rgb(13, 6, 6); font-weight: bold">%</span>
                     </div>
                 </div>
             </div>

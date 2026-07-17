@@ -343,7 +343,7 @@ function animate() {
 
                 // Drawing cluster
                 // ctx_cluster.fillStyle = "rgb(0, 157, 175)";
-                ctx_cluster.fillStyle = "rgb(246, 53, 134)";
+                ctx_cluster.fillStyle = "rgb(252, 239, 60)";
                 ctx_cluster.fillRect(x+canvas_cluster.width/2, y+canvas_cluster.height/2, 2, 2);
 
                 // Take whatever R_max is bigger between the current value and the new cluster particle

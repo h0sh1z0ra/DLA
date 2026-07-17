@@ -1,0 +1,152 @@
+body {
+    background-image: url("img/background.jpg");
+    background-size: cover;
+    /* background-repeat: no-repeat; */
+}
+
+h1 {
+    color: white;
+}
+
+h2 {
+    color: white;
+    font-size: 200%;
+
+    margin: 0px;
+}
+
+.app {
+    display:flex;
+    align-items: flex-start;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.label {
+    /* display: flex;
+    flex-direction: column; */
+
+    font-family: MS-Gothic;
+    font-size: 12px;
+    font-weight: bold;
+
+    color:white;
+}
+
+.slider {
+    accent-color: #5ad1e8;
+    width: 200px;
+}
+
+button.active {
+    border: 2px solid rgb(3, 239, 3);
+}
+
+button {
+    background-color: rgba(184, 184, 184, 0.5);
+
+    color: black;
+
+    border: 2px solid red;
+    border-radius: 6px;
+    padding: 8px 16px;
+    
+    cursor: pointer;
+}
+
+button:hover { 
+    background-color: #b3f0f9;
+}
+
+.canvas-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.canvas-layers {
+    position: relative;
+
+    /* background-image: url("background.jpg");
+    background-size: cover; */
+    background-color: rgba(218, 218, 218, 0.913);
+
+    left: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+
+
+    width: 800px;
+    height: 600px;
+}
+
+.canvas-layers canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.canvas-area .counters {
+    color: white;
+    position: absolute;
+
+    padding: 5px;
+    
+    top: 8px;
+    left: 8px;
+}
+
+.prob {
+    display: flex;
+    flex-direction: column;
+
+    border: 2px solid white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.sim-speed {
+    display: flex;
+    flex-direction: column;
+
+    border: 2px solid white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.bias {
+    display: flex;
+    flex-direction: column;
+
+    border: 2px solid white;
+    gap: 5px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.bias-buttons {
+    display: flex;
+    
+    margin: 0px;
+}
+
+.misc-buttons {
+    display: flex;
+    
+    margin: 5px;
+}
+
+.misc {
+    border: 2px solid white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.bethly {
+    width: 76%;
+}
