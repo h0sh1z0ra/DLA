@@ -74,12 +74,12 @@ button:hover {
 
     /* background-image: url("background.jpg");
     background-size: cover; */
-    background-color: rgba(218, 218, 218, 0.913);
+    /* background-color: rgba(218, 218, 218, 0.913); */
+    background-color: rgb(38, 41, 88);
 
     left: 10px;
     border: 2px solid white;
     border-radius: 10px;
-
 
     width: 800px;
     height: 600px;

@@ -214,7 +214,7 @@ bindButton( "resetButton", () => {
 })
 // ====================================================================== //
 // Show walkers
-let prevDrawX, prevDrawY;
+// let prevDrawX, prevDrawY;
 let show_walkers = false;
 
 bindButton("showWalker", () => {
