@@ -56,7 +56,7 @@ bindButton("pauseButton", () => {
 
 // ====================================================================== //
 // Frame rate control
-let STEPS_PER_FRAME = 10000;
+let STEPS_PER_FRAME = 224;
 
 const stepsPerFrame = document.getElementById("stepsPerFrame"); 
 stepsPerFrame.addEventListener("input", () => {                 // () = callback; parameter list. => makes it a function
