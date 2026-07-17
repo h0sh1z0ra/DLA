@@ -1,3 +1,8 @@
-# Modelling Diffusion Limited Aggregation
+# Modelling Diffusion-Limited Aggregation
+Modelling Diffusion-Limited Aggregation, taking inspiration from Witten & Sander's 1983 model. It also looks like a snowflake which is awesome!!!
+
+![Gif from Python project](py/dla.gif)
+![haru urara](img/haru_urara.png)
+
 ### Known Issues
-When a particle walks over the cluster (which shouldn't happen in real life), it erases that point on the cluster.
+When a particle walks over the cluster (which wouldn't happen in real life), it erases that point on the cluster.
