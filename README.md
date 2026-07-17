@@ -1,11 +1,22 @@
 # Modelling Diffusion-Limited Aggregation
-Modelling Diffusion-Limited Aggregation, taking inspiration from Witten & Sander's 1983 model. It also looks like a snowflake which is awesome!!!
+Modelling a DLA cluster, taking inspiration from Witten & Sander's 1983 model. It also looks like a snowflake which is awesome!!!
 
 <p align="center">
   <img src="img/haru_urara.png" width="200" alt="haru urara">
 </p>  
 
-![Gif from Python project](py/dla.gif)
+<p align="center">
+  <img src="py/dla.gif" width="600" alt="Gif from Python project">
+</p>
 
-### Known Issues
+This gif is from the Python simulation. I wanted to make an interactive version, where you could control the parameters so I remade the project from scratch in JavaScript and HTML. I couldn't replicate the colormap in JavaScript so I just went with a navy-yellow colour scheme. You can play around with it here: [Interactive Simulation](https://h0sh1z0ra.github.io/DLA/)
+
+## Theory and Usage
+Basically, particles are spawned and will walk randomly until they stick to the cluster or wander too far away and die. That's basically it. You can change the probability of a particle sticking to the nearest-neighbour (like the sides of a square) of a cluster particle and second-nearest-neighbour (vertices of a square). You can also change the speed of the simulation and some other stuff.
+
+## Known Issues
 When a particle walks over the cluster (which wouldn't happen in real life), it erases that point on the cluster.
+
+## Image Sources
+Icon and Chibi on page: Bethly from Gin'iro Haruka
+Haru Urara above: by [mochimochi_kinako on danbooru](https://danbooru.donmai.us/posts/8566433)
