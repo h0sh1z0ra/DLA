@@ -6,22 +6,38 @@ const ctx_cluster = canvas_cluster.getContext("2d");
 // For particle path
 const canvas_path = document.getElementById("canvas_path");
 const ctx_path = canvas_path.getContext("2d");
+
 canvas_path.style.display = "none";     // Hide by default
 ctx_path.fillStyle = "rgb(200 0 0/30%)";
 
 let running = true;
 
 // ====================================================================== //
+// DLA variables
+let x = 0;
+let y = 0;
+let R_max = 0;
+let Pnn = 1;
+let Psnn = 0;
+
+// Lists
+let nn_list = [[1,0],[-1,0],[0,1],[0,-1]];
+let snn_list = [[1,1],[-1,1],[1,-1],[-1,-1]];
+
 // Sliders
+let pnnValue = document.getElementById("pnnValue");
 const pnnSlider = document.getElementById("pnnSlider"); 
 pnnSlider.addEventListener("input", () => {     // () = callback; parameter list. => makes it a function
     Pnn = parseFloat(pnnSlider.value);          // convert to float
+    pnnValue.textContent = Pnn;
     console.log(`Pnn = ${Pnn}`);
 });
 
+let psnnValue = document.getElementById("psnnValue");
 const psnnSlider = document.getElementById("psnnSlider"); 
 psnnSlider.addEventListener("input", () => {    
-    Psnn = parseFloat(psnnSlider.value);      
+    Psnn = parseFloat(psnnSlider.value);   
+    psnnValue.textContent = Psnn;  
     console.log(`Psnn = ${Psnn}`);
 });
 
@@ -39,9 +55,8 @@ bindButton("pauseButton", () => {
 });
 
 // ====================================================================== //
-
 // Frame rate control
-let STEPS_PER_FRAME = 20000;
+let STEPS_PER_FRAME = 10000;
 
 const stepsPerFrame = document.getElementById("stepsPerFrame"); 
 stepsPerFrame.addEventListener("input", () => {                 // () = callback; parameter list. => makes it a function
@@ -51,7 +66,6 @@ stepsPerFrame.addEventListener("input", () => {                 // () = callback
 });
 
 // ====================================================================== //
-
 // Bias
 let direction;
 let delta = 0; // bias strength
@@ -74,11 +88,16 @@ function addBias(direction, delta) {
     return prob_list;
 }
 
+let biasStrengthLabel = document.getElementById("biasStrengthLabel");
+biasStrengthLabel.style.display = "none"; // hide by default
+
 // Adding bias direction buttons
 bindButton("biasNone", () => { 
     delta = 0; 
     p_list = [0.25,0.25,0.25,0.25];
     biasSlider.value = delta; 
+
+    biasStrengthLabel.style.display = "none";
     biasSlider.style.display="none";
 
     biasNone.classList.add("active");
@@ -95,6 +114,8 @@ bindButton("biasLeft", () => {
     delta = 0.08;
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
+
+    biasStrengthLabel.style.display = "";
     biasSlider.style.display=""; 
 
     biasNone.classList.remove("active");
@@ -111,6 +132,8 @@ bindButton("biasRight", () => {
     delta = 0.08;
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
+
+    biasStrengthLabel.style.display = "";
     biasSlider.style.display=""; 
 
     biasNone.classList.remove("active");
@@ -127,6 +150,8 @@ bindButton("biasUp", () => {
     delta = 0.08;
     biasSlider.value = delta;  
     p_list = addBias(direction, delta); 
+
+    biasStrengthLabel.style.display = "";
     biasSlider.style.display=""; 
 
     biasNone.classList.remove("active");
@@ -143,6 +168,8 @@ bindButton("biasDown", () => {
     delta = 0.08;
     biasSlider.value = delta;  
     p_list = addBias(direction, delta);
+
+    biasStrengthLabel.style.display = "";
     biasSlider.style.display=""; 
 
     biasNone.classList.remove("active");
@@ -192,6 +219,7 @@ let show_walkers = false;
 
 bindButton("showWalker", () => {
     show_walkers = !show_walkers;
+    showWalker.classList.toggle("active");
     showWalker.textContent = show_walkers ? "Hide Particle Paths" : "Show Particle Paths";
     canvas_path.style.display = show_walkers ? "" : "none";
 });
@@ -212,20 +240,9 @@ let Ratio = document.getElementById("Ratio");
 Ratio.textContent = ratio;
 
 // ====================================================================== //
-// DLA variables
-let x = 0;
-let y = 0;
-let R_max = 0;
-let Pnn = 1;
-let Psnn = 0;
-
 // Starting cluster
 let cluster = new Set();
 cluster.add(`${x},${y}`);
-
-// Lists
-let nn_list = [[1,0],[-1,0],[0,1],[0,-1]];
-let snn_list = [[1,1],[-1,1],[1,-1],[-1,-1]];
 
 // Function to walk the particle
 function stepParticle(x, y, p_list) {
@@ -325,7 +342,8 @@ function animate() {
                 NStuck.textContent = stuck_counter;
 
                 // Drawing cluster
-                ctx_cluster.fillStyle = "rgb(0, 157, 175)";
+                // ctx_cluster.fillStyle = "rgb(0, 157, 175)";
+                ctx_cluster.fillStyle = "rgb(246, 53, 134)";
                 ctx_cluster.fillRect(x+canvas_cluster.width/2, y+canvas_cluster.height/2, 2, 2);
 
                 // Take whatever R_max is bigger between the current value and the new cluster particle
