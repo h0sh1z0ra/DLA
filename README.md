@@ -13,7 +13,7 @@ This gif is from the Python simulation (in py folder) I made for a class in univ
 ![Simulation screenshot](img/screenshot.png)
  
 ## Theory and Usage
-Basically, particles are spawned and will walk randomly until they stick to the cluster or wander too far away and die. That's basically it. You can change the probability of a particle sticking to the nearest-neighbour (like the sides of a square) of a cluster particle and second-nearest-neighbour (vertices of a square). You can also change the speed of the simulation, bias the direction of growth and some other stuff.
+Basically, particles are spawned and will walk randomly until they stick to the cluster or wander too far away and die. They walk via Monte Carlo. That's basically it. You can change the probability of a particle sticking to the nearest-neighbour (like the sides of a square) of a cluster particle and second-nearest-neighbour (vertices of a square). You can also change the speed of the simulation, bias the direction of growth and some other stuff.
 
 ## Known Issues
 When a particle walks over the cluster (which wouldn't happen in real life), it erases that point on the cluster.
