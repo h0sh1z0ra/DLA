@@ -1,6 +1,7 @@
+import os
 import numpy as np
-from dla import run_dla, C, find_D, p5
 from time import sleep
+from dla import run_dla, C, find_D, p5
 
 def test_seeded_determinism():
     np.random.seed(42)
@@ -33,7 +34,7 @@ def test_no_floaters():
 def verify_fractal():
     np.random.seed(670)
 
-    cluster = run_dla(300, 1, 0, p5)
+    cluster = run_dla(5000, 1, 0, p5)
     D_list = []
 
     for _ in range(3):
@@ -42,10 +43,13 @@ def verify_fractal():
     
     assert 1.5 < np.mean(D_list) < 1.9
 
-# print(test_seeded_determinism())
-# sleep(1)
-# print(test_particle_count())
-# sleep(1)
-# print(test_no_floaters())
-# sleep(1)
-print(verify_fractal())
+def matches_golden():
+    path = os.path.join(os.path.dirname(__file__), "..", "control.npy")
+    if not os.path.exist(path):
+        return
+    control = np.load(path)
+    np.random.seed(153)
+    cluster, _ = run_dla(1000, 1, 0, p5)
+    current = np.array(sorted(cluster))
+
+    assert np.array_equal(current, control)

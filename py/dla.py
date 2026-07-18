@@ -332,16 +332,16 @@ def price_path(p, n_paths):
 # =============================================================================
 # Fractal Dimension
 # =============================================================================
-# Loop to make 6 clusters
-D_list = []
-for i in range(6):
-    cluster1 = run_dla(500, 1, 0, p5)
-    r, C_r = C(cluster1)
-    D_list.append(find_D(r,C_r))
+# # Loop to make 6 clusters
+# D_list = []
+# for i in range(6):
+#     cluster1 = run_dla(500, 1, 0, p5)
+#     r, C_r = C(cluster1)
+#     D_list.append(find_D(r,C_r))
     
-D_mean = np.mean(D_list)
-D_std = np.std(D_list)/(len(D_list))**0.5
-print(f"Fractal dimension D = {D_mean} +/- {D_std}")
+# D_mean = np.mean(D_list)
+# D_std = np.std(D_list)/(len(D_list))**0.5
+# print(f"Fractal dimension D = {D_mean} +/- {D_std}")
 # =============================================================================
 # Finance
 # =============================================================================
