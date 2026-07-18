@@ -37,6 +37,7 @@ creds.js
  
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.npy
 *.py[cod]
 *$py.class
  
