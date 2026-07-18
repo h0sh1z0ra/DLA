@@ -102,9 +102,9 @@ def run_dla(N, Pnn, Psnn, p):
         if dist > R_max:
             R_max = dist
         
-        # Print update every 200 particles mapped
-        if len(cluster)%200==0:
-            print(f"Still working! Mapped particles: {len(cluster)}/{N}")
+        # # Print update every 200 particles mapped
+        # if len(cluster)%200==0:
+        #     print(f"Still working! Mapped particles: {len(cluster)}/{N}")
             
     return cluster, order
 
@@ -175,8 +175,8 @@ def price_path(p, n_paths):
 # =============================================================================
 # Part (a): Normal plot; comparing Pnn = 1 and Pnn = 0.3
 # =============================================================================
-# cluster1 = run_dla(5000, 1, 0, p5)
-# cluster2 = run_dla(5000, 0.3, 0, p5)
+# cluster1 = run_dla(500, 1, 0, p5)
+# cluster2 = run_dla(500, 0.3, 0, p5)
 # fig, axs = plt.subplots(1,2, figsize=(20,10))
 # x1, y1 = zip(*cluster1[1])
 # x2, y2 = zip(*cluster2[1])
@@ -333,15 +333,15 @@ def price_path(p, n_paths):
 # Fractal Dimension
 # =============================================================================
 # Loop to make 6 clusters
-# D_list = []
-# for i in range(6):
-#     cluster1 = run_dla(5000, 1, 0, p5)
-#     r, C_r = C(cluster1)
-#     D_list.append(find_D(r,C_r))
+D_list = []
+for i in range(6):
+    cluster1 = run_dla(500, 1, 0, p5)
+    r, C_r = C(cluster1)
+    D_list.append(find_D(r,C_r))
     
-# D_mean = np.mean(D_list)
-# D_std = np.std(D_list)/(len(D_list))**0.5
-# print(f"Fractal dimension D = {D_mean} +/- {D_std}")
+D_mean = np.mean(D_list)
+D_std = np.std(D_list)/(len(D_list))**0.5
+print(f"Fractal dimension D = {D_mean} +/- {D_std}")
 # =============================================================================
 # Finance
 # =============================================================================
