@@ -253,6 +253,7 @@ function stepParticle(x, y, p_list) {
         if (i == 0) {
             node_list.push(p_list[i]); // If first element, add first element
         }
+        
         else {
             node_list.push(p_list[i] + node_list[i-1]); // Else add current element plus last rolling element
         }
@@ -292,8 +293,10 @@ function isStuck(cluster, x, y, Pnn, Psnn) {
     // Looping through neighbours
     for (let {offset, prob} of neighbours) {
         let [dx, dy] = offset;
+
         if (cluster.has(`${x+dx},${y+dy}`)) { // If the coordinate to be moved to is in cluster, roll to stick
             let roll = Math.random()
+
             if (roll < prob) {
                 return true;
             }
